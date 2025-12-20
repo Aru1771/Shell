@@ -140,7 +140,78 @@ big_file=()
 #		echo "print $i"
 #       fi
 #done
-###################################################################################################################
+###############################################################################################################################
+#the below script check how many variablrs we are passing at run time if we are passing less than 2 variables it will give error
+#set -euo pipefail
+
+#if [ $# -lt 2 ]; then
+#	echo "error"
+#	exit 1
+#fi
+
+#APP_NAME="$1"
+#APP_ENV="$2"
+
+#echo "$APP_NAME is running on $APP_ENV"
+
+#########################################################################################################################################
+
+#read -p "Enter the service name: " service
+
+#systemctl is-active --quiet $service
+#
+#if [ $? -eq 0 ]; then
+#	echo "$service is running"
+#else
+#	echo "$service is stopped"
+#fi
+##########################################################################################################################
+# this scripty will check the input is file or folder and tell us and if the file and folder not available it will tell 
+#file="$1"
+
+#if [ -f "$file" ]; then
+#	
+#       echo "this is a file"
+#elif [ -d "$file" ]; then
+#        echo "this is folder"
+#else
+#        echo  "there is no file or folder exist"
+#fi
+
+#Test	Meaning
+#-f	regular file
+#-d	directory
+#-e	exists
+#-s	not empty
+#-r	readable
+#-w	writable
+#-x	executable
+#-L	symlink
+#-O	owner
+#-nt	newer
+#-ot	older
+
+##########################################################################################################################
+#this script will check softwates are installed or not
+
+#read -p "Enter service name: " service
+
+#if  command -v "$service" >/dev/null 2>&1 ; then
+#	echo "installed"
+#else
+#	echo "not-installed"
+#fi
+
+
+
+
+
+
+
+
+
+
+
 
 
 
