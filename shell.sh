@@ -201,14 +201,150 @@ big_file=()
 #else
 #	echo "not-installed"
 #fi
+#######################################################################################
+# below script gives script name count of variables and print all the variables seperatly
+#set -euo pipefail
+
+#echo "Script name: $0"
+#echo "Args count: $#"
+#echo "Args: $@"
+
+########################################################################################
+#the below  script exit if we miss the variables at the run time 
+#set -euo pipefail
+#
+#if [ $# -lt 2 ]; then
+#	echo "error"
+#	exit 1
+#fi
+
+#ENV="$1"
+#APP_NAME="$2"
+
+#echo "$ENV"
+#echo "$APP_NAME"
 
 
+#################################################################################
+# the script check the input and tell what it is
+#read -p "Enter file name: " file
 
+#if [ -f $file ]; then
+#	echo "its a file"
+#elif [ -d $file ]; then
+#	echo "its folder"
+#else
+#	echo "file not exist"
+#fi
 
+###################################################################
+# the code checks the tool commands are working or not
 
+#!/bin/bash
+#set -euo pipefail
 
+#tools=("docker" "git" "jenkins" "minikube")
 
+#for tool in "${tools[@]}"; do
+#   if command -v "$tool" >/dev/null 2>&1; then
+#        echo "✅ $tool is installed"
+#   else
+#       echo "❌ $tool is NOT installed"
+#       exit 1
+#   fi
+#done
 
+#echo "All required tools are installed"
+####################################################################
+#Read Multiple Servers & Check Connectivity
+
+#!/bin/bash
+set -euo pipefail
+
+# List of servers
+servers=("8.8.8.8" "1.1.1.1" "192.168.1.100")
+
+# Output file with timestamp
+log_file="ping_status_$(date '+%Y-%m-%d_%H-%M-%S').log"
+
+echo "Ping check started at $(date)" | tee -a "$log_file"
+echo "---------------------------------" | tee -a "$log_file"
+
+for server in "${servers[@]}"; do
+    if ping -c 2 "$server" &>/dev/null; then
+        echo "✅ $server is UP" | tee -a "$log_file"
+    else
+        echo "❌ $server is DOWN" | tee -a "$log_file"
+    fi
+done
+
+echo "---------------------------------" | tee -a "$log_file"
+echo "Ping check completed" | tee -a "$log_file"
+
+########################################################################
+#Pre-Deployment Validation Script
+
+#!/bin/bash
+set -euo pipefail
+
+echo "🔍 Starting pre-deployment validation..."
+
+# -------------------------------
+# 1️⃣ Check required commands
+# -------------------------------
+REQUIRED_CMDS=("docker" "kubectl" "git")
+
+for cmd in "${REQUIRED_CMDS[@]}"; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        echo "✅ Command found: $cmd"
+    else
+        echo "❌ Missing required command: $cmd"
+        exit 1
+    fi
+done
+
+# -------------------------------
+# 2️⃣ Check required ENV variables
+# -------------------------------
+REQUIRED_ENVS=("APP_ENV" "IMAGE_TAG")
+
+for var in "${REQUIRED_ENVS[@]}"; do
+    if [ -z "${!var:-}" ]; then
+        echo "❌ Environment variable $var is NOT set"
+        exit 1
+    else
+        echo "✅ $var=${!var}"
+    fi
+done
+
+# -------------------------------
+# 3️⃣ Disk usage check
+# -------------------------------
+DISK_USED=$(df / | awk 'NR==2 {print $5}' | sed 's/%//')
+
+if [ "$DISK_USED" -gt 80 ]; then
+    echo "❌ Disk usage too high: ${DISK_USED}%"
+    exit 1
+else
+    echo "✅ Disk usage OK: ${DISK_USED}%"
+fi
+
+# -------------------------------
+# 4️⃣ Memory usage check
+# -------------------------------
+MEM_USED=$(free | awk '/Mem:/ {printf("%.0f", $3/$2 * 100)}')
+
+if [ "$MEM_USED" -gt 75 ]; then
+    echo "❌ Memory usage too high: ${MEM_USED}%"
+    exit 1
+else
+    echo "✅ Memory usage OK: ${MEM_USED}%"
+fi
+
+# -------------------------------
+# Final status
+# -------------------------------
+echo "🚀 Ready for deployment"
 
 
 
