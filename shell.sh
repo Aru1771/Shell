@@ -345,7 +345,32 @@ fi
 # Final status
 # -------------------------------
 echo "🚀 Ready for deployment"
+#######################################################################################################
+#!/bin/bash
+set -euo pipefail
 
+REPORT_FILE="k8s_node_report_$(date '+%Y-%m-%d_%H-%M-%S').log"
+
+echo "Kubernetes Node Health Report" | tee "$REPORT_FILE"
+echo "-----------------------------" | tee -a "$REPORT_FILE"
+
+NOT_READY=$(kubectl get nodes --no-headers | awk '$2 != "Ready" {print $1}')
+READY=$(kubectl get nodes --no-headers | awk '$2 == "Ready" {print $1}')
+
+if [ -n "$READY" ]; then
+    echo "✅ Ready Nodes:" | tee -a "$REPORT_FILE"
+    echo "$READY" | tee -a "$REPORT_FILE"
+fi
+
+if [ -n "$NOT_READY" ]; then
+    echo "❌ Not Ready Nodes:" | tee -a "$REPORT_FILE"
+    echo "$NOT_READY" | tee -a "$REPORT_FILE"
+    exit 1
+else
+    echo "✅ All nodes are Ready" | tee -a "$REPORT_FILE"
+fi
+
+echo "Report saved to $REPORT_FILE"
 
 
 
