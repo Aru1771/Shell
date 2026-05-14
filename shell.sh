@@ -371,7 +371,30 @@ else
 fi
 
 echo "Report saved to $REPORT_FILE"
+====================================================================================================================================================================
 
+#upload jenkins logs to s3 bucket
+
+
+“The Jenkins EC2 instance had an IAM role attached with S3 PutObject permissions. When the AWS CLI command executed,
+it automatically used temporary credentials provided through the EC2 instance metadata service to authenticate 
+with AWS and upload the backup file to the S3 bucket.”
+
+
+
+#!/bin/bash
+
+DATE=$(date +%Y-%m-%d-%H-%M)
+
+BACKUP_FILE=jenkins-logs-$DATE.zip
+
+cd /var/log/
+
+zip -r /tmp/$BACKUP_FILE jenkins
+
+aws s3 cp /tmp/$BACKUP_FILE s3://jenkins-log-backup-prod/
+
+rm -f /tmp/$BACKUP_FILE
 
 
 
